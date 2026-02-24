@@ -27,57 +27,14 @@
 
     <style>
       /*
-        HEADER LOGO CUTOUT — xSTIK
-        Think of the fixed header as a sheet of frosted glass held in front
-        of the page. This CSS punches a soft oval hole in the bottom-center
-        of that sheet so the hero logo peeks through from behind.
-
-        Technique: CSS mask-image with a radial-gradient.
-        - Transparent at the center-bottom (the hole)
-        - Graduates through semi-transparent to fully opaque at the edges
-        - The hole is positioned slightly below the header bottom edge,
-          so only the top arc of the oval actually cuts through the header
-        
-        When the user scrolls down, the logo naturally slides below the
-        header and the cutout simply becomes unused — the header looks
-        solid from side to side as you move through the rest of the page.
+        HEADER OFFSET
+        The fixed header sits on top of the page content. We push the root
+        container down by the header height so the logo and hero content
+        start below the header rather than behind it.
+        64px covers the header on both mobile and desktop.
       */
-      .xstik-header-cutout {
-        /* Mobile: logo is 128px (w-32) */
-        -webkit-mask-image: radial-gradient(
-          ellipse 90px 75px at 50% 115%,
-          transparent 42%,
-          rgba(0, 0, 0, 0.2) 58%,
-          rgba(0, 0, 0, 0.75) 74%,
-          black 90%
-        );
-        mask-image: radial-gradient(
-          ellipse 90px 75px at 50% 115%,
-          transparent 42%,
-          rgba(0, 0, 0, 0.2) 58%,
-          rgba(0, 0, 0, 0.75) 74%,
-          black 90%
-        );
-      }
-
-      /* Desktop: logo is 160px (w-40) */
-      @media (min-width: 768px) {
-        .xstik-header-cutout {
-          -webkit-mask-image: radial-gradient(
-            ellipse 112px 90px at 50% 120%,
-            transparent 42%,
-            rgba(0, 0, 0, 0.2) 58%,
-            rgba(0, 0, 0, 0.75) 74%,
-            black 90%
-          );
-          mask-image: radial-gradient(
-            ellipse 112px 90px at 50% 120%,
-            transparent 42%,
-            rgba(0, 0, 0, 0.2) 58%,
-            rgba(0, 0, 0, 0.75) 74%,
-            black 90%
-          );
-        }
+      #root {
+        padding-top: 64px;
       }
     </style>
 
@@ -87,40 +44,5 @@
 
   <body>
     <div id="root"></div>
-
-    <script>
-      /*
-        After React mounts the DOM, locate the fixed header element and apply
-        the cutout class. We poll briefly (up to 4s) because React renders async.
-        The header is identified by its Tailwind classes: fixed + top-0 + left-0 + right-0.
-      */
-      (function () {
-        function applyHeaderCutout() {
-          var all = document.querySelectorAll('*');
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            var cls = typeof el.className === 'string' ? el.className : '';
-            if (
-              cls.indexOf('fixed') !== -1 &&
-              cls.indexOf('top-0') !== -1 &&
-              cls.indexOf('left-0') !== -1 &&
-              cls.indexOf('right-0') !== -1 &&
-              cls.indexOf('xstik-header-cutout') === -1
-            ) {
-              el.classList.add('xstik-header-cutout');
-              return true;
-            }
-          }
-          return false;
-        }
-
-        var attempts = 0;
-        var interval = setInterval(function () {
-          if (applyHeaderCutout() || ++attempts >= 40) {
-            clearInterval(interval);
-          }
-        }, 100);
-      })();
-    </script>
   </body>
 </html>
